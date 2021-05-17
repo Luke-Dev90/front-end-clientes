@@ -1,0 +1,4 @@
+<div *ngIf="paginas?.length > 0" class="pagination">
+    <button class="btn btn-primary mx-1" *ngFor="let pagina of paginas"
+    [routerLink]="['/clientes/page/',pagina-1]"> {{pagina}}</button>
+</div>
