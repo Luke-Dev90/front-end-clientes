@@ -2,25 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { ClienteService } from './cliente.service';
 import { Clientes } from './clientes';
 import { Router,ActivatedRoute } from '@angular/router';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import swal from 'sweetalert2'
+import { Region } from './region';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html'
 })
+
 export class FormComponent implements OnInit {
 
   cliente:Clientes = new Clientes();
   titulo: string = "Crear Cliente";  
-
+  
   errores :string[];
 
   constructor(private clienteService: ClienteService,
     private router:Router,
     private activatedRoute: ActivatedRoute) { }
-
-  ngOnInit(): void {
-    this.cargarCliente()
+    regiones: Region[];
+  ngOnInit() {
+    this.cargarCliente();
+    this.cargarRegiones();
   }
   
   cargarCliente():void{
@@ -30,6 +34,11 @@ export class FormComponent implements OnInit {
         this.clienteService.getCliente(id).subscribe( (cliente) => this.cliente = cliente
           )
       }
+    })
+  }
+  cargarRegiones():void{
+    this.clienteService.getRegiones().subscribe(regiones =>{
+      this.regiones = regiones;
     })
   }
 
@@ -50,6 +59,7 @@ export class FormComponent implements OnInit {
   }
 
   update():void{
+    
     this.clienteService.update(this.cliente)
     .subscribe(
       json => {
@@ -62,6 +72,13 @@ export class FormComponent implements OnInit {
         console.error(err.error.errors);
       }
     )
+  }
+
+  compararRegion(o1:Region,o2:Region):boolean{
+    if(o1 === undefined && o2 === undefined){
+      return true;
+    } 
+    return o1 == null || o2== null || o1 === undefined || o2 === undefined ? false: o1.id == o2.id;
   }
 
 }
